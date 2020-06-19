@@ -7,3 +7,6 @@ before production use or sharing with anothers.
 The project is responsive, and it adapts well for other devices.
 
 ![](mobile_demo.gif)
+
+# Database for the APIs
+I have an initial database for the API queries here: https://github.com/AlbertoHdezS/PC-Building-Database
