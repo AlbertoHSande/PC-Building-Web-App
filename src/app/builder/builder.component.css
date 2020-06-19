@@ -1,0 +1,99 @@
+.container {
+    min-height: 50em;
+    padding: 1em;
+
+  }
+  .wireframe {
+    margin-top: 2em;
+  }
+
+  .center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .statistics{
+      margin: 0 auto;
+      
+  }
+
+  .mobile{
+    display: block;
+    margin-left: 0;
+    padding-left: 0;
+  }
+
+  p { display: inline }
+
+  a{
+    color: #DB2828;
+  }
+
+  .shadow {
+    position: relative;
+    z-index: 2;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    background: repeating-linear-gradient(
+      -55deg,
+      #222,
+      #222 10px,
+      #333 10px,
+      #333 20px
+    );
+  }
+
+  .header.section{
+    color:white;
+    padding: 1em;
+    text-align: center;
+  }
+
+/*   .card {
+    overflow: hidden;
+    position: relative;
+    height: 160px;
+    width: 316px;
+    }
+    .image {
+    position: absolute;
+    width: auto;
+    height: 100%;
+    left: 50%;
+    top: 50%;
+    -webkit-transform: translate(-50%,-50%);
+    -ms-transform: translate(-50%,-50%);
+    transform: translate(-50%,-50%);
+    } */
+
+    .cards{
+      margin-bottom: 1em;
+    }
+
+table {
+  outline: none;
+  border-color: #9ecaed;
+  box-shadow: 0 0 10px #9ecaed;
+}
+
+.share.buttons {
+  padding: 3em;
+  margin: 3em;
+}
+
+.content.sbuilds {
+  color: white;
+  padding: 1em;
+}
+.content .header .sbuilds{
+  color: white;
+}
+.avatar {
+  height: 32px;
+  width: 32px;
+}
+
+.about {
+  text-align: justify;
+  font-size: large;
+}

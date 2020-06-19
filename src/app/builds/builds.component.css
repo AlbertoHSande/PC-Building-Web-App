@@ -1,0 +1,38 @@
+.container {
+    min-height: 50em;
+    padding: 1em;
+    color: black;
+    border-width: 1px;
+    border-style: solid;
+    border-image: 
+      linear-gradient(
+        white, 
+        grey, 
+        white
+      ) 1 100%;
+    /* background: repeating-linear-gradient(
+      -55deg,
+      #222,
+      #222 10px,
+      #333 10px,
+      #333 20px
+    ); */
+  }
+
+    .header{
+      color:white;
+      padding: 1em;
+    }
+
+
+  a:hover{
+    color: red;
+  }
+
+  .description{
+    font-size: 10px;
+  }
+
+  .header{
+    font-size: 1em;
+  }

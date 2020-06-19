@@ -1,0 +1,39 @@
+html,body {
+  background: #F5E9E2;
+}
+
+.about {
+  text-align: justify;
+  padding: 2em;
+  font-size: large;
+}
+
+@media screen and (min-width: 1300px) {
+    .main{
+        padding-left: 8em;
+        padding-right: 8em;
+        background-color: #F5E9E2;
+    }
+}
+
+.shadow {
+    position: relative;
+    z-index: 2;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    background: repeating-linear-gradient(
+      -55deg,
+      #222,
+      #222 10px,
+      #333 10px,
+      #333 20px
+    );
+  }
+
+  .grid{
+      margin-bottom: 1em;
+  }
+
+  .main {
+    background-color: #F5E9E2;
+  }
+

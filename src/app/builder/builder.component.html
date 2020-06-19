@@ -1,0 +1,925 @@
+<div class="container">
+  <div class="ui stackable grid">
+    <div class="three wide column ui statistics">
+      <div class="red statistic">
+        <div class="value">
+          {{stats[0].number}}
+        </div>
+        <div class="label">
+          Computer components
+        </div>
+      </div>
+    </div>
+    <div class="twelve wide column">
+      <p class="about">This tool was made in order to help you build the gaming computer you need. You can search by
+        game and choose to build a computer with the minimum or recommended system requirements
+        that are listed on its official Steam page, plus a "maximum" system requirement for playing the selected game in
+        Ultra (at least in 1080p resolution and 60 FPS). If a component is no longer available on Amazon, the tool will offer
+        the closest one.
+      </p>
+    </div>
+    <!-- <div class="eight wide column">
+      <div class="ui icon message">
+        <i class="download icon"></i>
+        <div class="content">
+          <a class="header" href="https://hdsettings.com/apps/hdsettings/HDsettings_setup_1.0.msi">
+            Download the Windows 10 app (Beta)
+          </a>
+          <p>Know your specs.</p>
+        </div>
+      </div>
+    </div> -->
+    <div class="three wide column">
+    </div>
+  </div>
+  <h1 class="header section shadow">Build your PC</h1>
+  <div class="ui four cards" *ngIf="games">
+    <div class="ui card">
+      <div class="content">
+        <div class="ui placeholder">
+          <div class="rectangular image"></div>
+        </div>
+      </div>
+    </div>
+    <div class="ui card">
+      <div class="content">
+        <div class="ui placeholder">
+          <div class="rectangular image"></div>
+        </div>
+      </div>
+    </div>
+    <div class="ui card">
+      <div class="content">
+        <div class="ui placeholder">
+          <div class="rectangular image"></div>
+        </div>
+      </div>
+    </div>
+    <div class="ui card">
+      <div class="content">
+        <div class="ui placeholder">
+          <div class="rectangular image"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="ui stackable four cards">
+    <a class="card" *ngFor="let juego of juegos | slice:0:4; let i=index">
+      <div class="image">
+        <img src="../../assets/images/games/{{juego.imagen}}" (click)="searchComponentsByGame(juego); doScroll()"
+          alt="{{juego.nombre}}">
+      </div>
+    </a>
+  </div>
+  <div class="ui fluid inverted search selection dropdown">
+    <input type="hidden">
+    <i class="dropdown icon"></i>
+    <div class="default text" [innerHTML]="selectedGame.nombre">Search by game</div>
+    <div class="menu">
+      <div class="item" *ngFor="let juego of juegos" (click)="searchComponentsByGame(juego); doScroll()">
+        {{juego.nombre}}</div>
+    </div>
+  </div>
+  <div class="ui inverted three item menu" *ngIf="showRequirements">
+    <a class="item" [ngClass]="{'active': selectedSpecs === 'minspecs'}" (click)="selectedSpecs = 'minspecs'; getMinSpecs(selectedGame)"><i class="motorcycle icon"></i> Minimum Specs</a>
+    <a class="item active" [ngClass]="{'active': selectedSpecs === 'recspecs'}" (click)="selectedSpecs = 'recspecs'; searchComponentsByGame(selectedGame)"><i class="car side icon"></i> Recommended Specs</a>
+    <a class="item" [ngClass]="{'active': selectedSpecs === 'maxspecs'}" (click)="selectedSpecs = 'maxspecs'; getMaxSpecs(selectedGame)"><i class="truck monster icon"></i> Maximum Specs</a>
+  </div>
+  <table class="ui tablet very inverted simple selectable stackable table" id="table">
+    <thead>
+      <tr>
+        <th>Component</th>
+        <th>Selected</th>
+        <th></th>
+        <th class="right aligned"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><i class="microchip icon"></i>Motherboard</td>
+        <td>
+          <p *ngIf="placaBase" [innerHTML]="placaBase.modelo"></p>
+        </td>
+        <td id="amazon">
+          <a class="ui orange placabase button" *ngIf="placaBase"
+            href="https://www.amazon.{{userLang}}/gp/product/{{placaBase.asin}}" target="_blank">
+            <i class="amazon icon"></i>
+            <p>Go to Amazon</p>
+          </a>
+        </td>
+        <td class="right aligned">
+          <div class="ui red button" (click)="showModal('placa')">
+            <i class="add icon"></i>
+            <p *ngIf="!placaBase">Add</p>
+            <p *ngIf="placaBase">Change</p>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td><i class="microchip icon"></i>CPU</td>
+        <td>
+          <p *ngIf="Procesador" [innerHTML]="Procesador.modelo"></p>
+        </td>
+        <td id="amazon">
+          <a class="ui orange procesador button" *ngIf="Procesador"
+            href="https://www.amazon.{{userLang}}/gp/product/{{Procesador.asin}}" target="_blank">
+            <i class="amazon icon"></i>
+            <p>Go to Amazon</p>
+          </a>
+        </td>
+        <td class="right aligned">
+          <div class="ui red disabled button" [ngClass]="{'disabled': !placaBase}"
+            (click)="showProcessors(placaBase.socket)">
+            <i class="add icon"></i>
+            <p *ngIf="!Procesador">Add</p>
+            <p *ngIf="Procesador">Change</p>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td><i class="microchip icon"></i>Graphics Card</td>
+        <td>
+          <p *ngIf="Grafica" [innerHTML]="Grafica.fabricante + '&nbsp;' + Grafica.modelo"></p>
+        </td>
+        <td id="amazon">
+          <a class="ui orange grafica button" *ngIf="Grafica"
+            href="https://www.amazon.{{userLang}}/gp/product/{{Grafica.asin}}" target="_blank">
+            <i class="amazon icon"></i>
+            <p>Go to Amazon</p>
+          </a>
+        </td>
+        <td class="right aligned">
+          <div class="ui red disabled button" [ngClass]="{'disabled': !Procesador}" (click)="showGraficas()">
+            <i class="add icon"></i>
+            <p *ngIf="!Grafica">Add</p>
+            <p *ngIf="Grafica">Change</p>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td><i class="microchip icon"></i>RAM</td>
+        <td>
+          <p *ngIf="Ram"
+            [innerHTML]="Ram.fabricante + '&nbsp;' +  Ram.memoria + '&nbsp;' + Ram.tipo + '&nbsp;' + Ram.frecuencia">
+          </p>
+        </td>
+        <td id="amazon">
+          <a class="ui orange ram button" *ngIf="Ram" href="https://www.amazon.{{userLang}}/gp/product/{{Ram.asin}}"
+            target="_blank">
+            <i class="amazon icon"></i>
+            <p>Go to Amazon</p>
+          </a>
+        </td>
+        <td class="right aligned">
+          <div class="ui red disabled button" [ngClass]="{'disabled': !Grafica}" (click)="showRam()">
+            <i class="add icon"></i>
+            <p *ngIf="!Ram">Add</p>
+            <p *ngIf="Ram">Change</p>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td><i class="hdd icon"></i>Main Drive</td>
+        <td>
+          <p *ngIf="Disco1" [innerHTML]="Disco1.fabricante + '&nbsp;' + Disco1.memoria + '&nbsp;' + Disco1.tipo"></p>
+        </td>
+        <td id="amazon">
+          <a class="ui orange disco1 button" *ngIf="Disco1"
+            href="https://www.amazon.{{userLang}}/gp/product/{{Disco1.asin}}" target="_blank">
+            <i class="amazon icon"></i>
+            <p>Go to Amazon</p>
+          </a>
+        </td>
+        <td class="right aligned">
+          <div class="ui red disabled button" [ngClass]="{'disabled': !Ram}" (click)="showDisco()">
+            <i class="add icon"></i>
+            <p *ngIf="!Disco1">Add</p>
+            <p *ngIf="Disco1">Change</p>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td><i class="hdd icon"></i>Second Drive</td>
+        <td>
+          <p *ngIf="Disco2" [innerHTML]="Disco2.fabricante + '&nbsp;' + Disco2.memoria + '&nbsp;' + Disco2.tipo"></p>
+        </td>
+        <td id="amazon">
+          <a class="ui orange disco2 button" *ngIf="Disco2"
+            href="https://www.amazon.{{userLang}}/gp/product/{{Disco2.asin}}" target="_blank">
+            <i class="amazon icon"></i>
+            <p>Go to Amazon</p>
+          </a>
+        </td>
+        <td class="right aligned">
+          <div class="ui red disabled button" [ngClass]="{'disabled': !Disco1}" (click)="showDisco2()">
+            <i class="add icon"></i>
+            <p *ngIf="!Disco2">Add</p>
+            <p *ngIf="Disco2">Change</p>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td><i class="plug icon"></i>PSU</td>
+        <td>
+          <p *ngIf="Fuente" [innerHTML]="Fuente.fabricante + '&nbsp;' + Fuente.potencia"></p>
+        </td>
+        <td id="amazon">
+          <a class="ui orange fuente button" *ngIf="Fuente"
+            href="https://www.amazon.{{userLang}}/gp/product/{{Fuente.asin}}" target="_blank">
+            <i class="amazon icon"></i>
+            <p>Go to Amazon</p>
+          </a>
+        </td>
+        <td class="right aligned">
+          <div class="ui red disabled button" [ngClass]="{'disabled': !Disco1}" (click)="showFuentes()">
+            <i class="add icon"></i>
+            <p *ngIf="!Fuente">Add</p>
+            <p *ngIf="Fuente">Change</p>
+          </div>
+        </td>
+      </tr>
+      <!--       <tr>
+        <td><i class="archive icon"></i>Caja</td>
+        <td></td>
+        <td></td>
+        <td class="right aligned">
+          <div class="ui red disabled button" (click)="showModal('placa')">
+            <i class="add icon"></i>
+            Add
+          </div>
+        </td>
+      </tr> -->
+      <!-- <tr>
+        <td><i class="tint icon"></i>Refrigeración</td>
+        <td></td>
+        <td></td>
+        <td class="right aligned">
+          <div class="ui red disabled button" (click)="showModal('placa')">
+            <i class="add icon"></i>
+            Add
+          </div>
+        </td>
+      </tr> -->
+    </tbody>
+  </table>
+  <div class="ui two column doubling stackable grid">
+    <div class="column">
+      <div *ngIf="showRequirements && videoUrl">
+        <iframe [width]="videoWidth" [height]="videoHeight" [src]="videoUrl" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      </div>
+    </div>
+    <div class="column">
+      <div class="ui inverted disabled button segment center" [ngClass]="{'disabled': !Fuente}"
+        (click)="showCompartir()"><i class="share square icon"></i>Share this build</div>
+    </div>
+    <!--     <div class="column">
+      <div class="ui inverted segment center">Precio Total: 1224€</div>
+    </div> -->
+  </div>
+  <h1 class="header section shadow">Streamers builds</h1>
+  <div class="content sbuilds">
+    <div class="ui six doubling cards">
+      <a class="card" data-title="{{sbuild.nombre}}" *ngFor="let sbuild of sbuilds | slice:0:6; let i=index"
+        (click)="searchComponentsByStreamer(sbuild); doScroll()">
+        <div class="image zoom">
+          <img src="../../assets/images/sbuilds/{{sbuild.imagen}}" alt="{{sbuild.nombre}}">
+        </div>
+      </a>
+    </div>
+  </div>
+</div>
+
+<style>
+  .zoom {
+    transition: transform .2s;
+    /* Animation */
+  }
+
+  .zoom:hover {
+    transform: scale(1.1);
+    /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
+  }
+</style>
+
+
+
+
+<div class="ui modal placasbase">
+  <i class="close icon"></i>
+  <div class="header">
+    Select a motherboard
+  </div>
+  <div class="ui pointing menu">
+    <a class="item active" [ngClass]="{'active': selectedItem === 'item1'}" (click)="selectedItem = 'item1'; term = ''">
+      All
+    </a>
+    <a class="item" [ngClass]="{'active': selectedItem === 'item2'}" (click)="selectedItem = 'item2'; term = 'AMD'">
+      AMD
+    </a>
+    <a class="item" [ngClass]="{'active': selectedItem === 'item3'}" (click)="selectedItem = 'item3'; term = 'Intel'">
+      Intel
+    </a>
+    <div class="right menu">
+      <div class="item">
+        <div class="ui transparent icon input">
+          <input type="text" placeholder="Buscar..." [(ngModel)]="term">
+          <i class="search link icon"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+  <table class="ui celled padded table">
+    <thead>
+      <tr>
+        <th class="single line">Model</th>
+        <th>Socket</th>
+        <th>Platform</th>
+        <th>Manufacturer</th>
+        <th></th>
+        <th></th>
+      </tr>
+    </thead>
+    <div class="ui placeholder" *ngIf="!placas">
+      <div class="paragraph">
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+      </div>
+    </div>
+    <tbody *ngFor="let placa of placas | filter:term | paginate: { itemsPerPage: 5, currentPage: p }; let i = index">
+      <tr>
+        <td>
+          {{placa.modelo}}
+        </td>
+        <td class="single line">
+          {{placa.socket}}
+        </td>
+        <td>
+          {{placa.plataforma}}
+        </td>
+        <td class="right aligned">
+          {{placa.fabricante}}
+        </td>
+        <td id="amazon">
+          <a class="ui orange button" href="https://www.amazon.{{userLang}}/gp/product/{{placa.asin}}" target="_blank">
+            <i class="amazon icon"></i>
+            <p>Go to Amazon</p>
+          </a>
+        </td>
+        <td>
+          <div class="actions">
+            <div class="ui positive right labeled icon button" (click)="placaBase = placa">
+              Add
+              <i class="checkmark icon"></i>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+    <tfoot>
+      <tr>
+        <pagination-controls (pageChange)="p = $event">
+        </pagination-controls>
+      </tr>
+    </tfoot>
+  </table>
+  <div class="actions">
+    <div class="ui black deny button">
+      Cancel
+    </div>
+  </div>
+</div>
+
+<div class="ui modal procesadores">
+  <i class="close icon"></i>
+  <div class="header">
+    Select a CPU
+  </div>
+  <div class="ui pointing menu">
+    <a class="item active" [ngClass]="{'active': selectedItem === 'item1'}" (click)="selectedItem = 'item1'; term = ''">
+      All
+    </a>
+    <a class="item" [ngClass]="{'active': selectedItem === 'item2'}" (click)="selectedItem = 'item2'; term = 'AMD'">
+      AMD
+    </a>
+    <a class="item" [ngClass]="{'active': selectedItem === 'item3'}" (click)="selectedItem = 'item3'; term = 'Intel'">
+      Intel
+    </a>
+    <div class="right menu">
+      <div class="item">
+        <div class="ui transparent icon input">
+          <input type="text" placeholder="Buscar..." [(ngModel)]="term">
+          <i class="search link icon"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+  <table class="ui celled padded table">
+    <thead>
+      <tr>
+        <th class="single line">Model</th>
+        <th>Socket</th>
+        <th>Platform</th>
+        <th>Consumption</th>
+        <th></th>
+        <th></th>
+      </tr>
+    </thead>
+    <div class="ui placeholder" *ngIf="!procesadores">
+      <div class="paragraph">
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+      </div>
+    </div>
+    <tbody
+      *ngFor="let procesador of procesadores | filter:term | paginate: { itemsPerPage: 5, currentPage: p }; let i = index">
+      <tr>
+        <td>
+          {{procesador.modelo}}
+        </td>
+        <td class="single line">
+          {{procesador.socket}}
+        </td>
+        <td>
+          {{procesador.plataforma}}
+        </td>
+        <td class="right aligned">
+          {{procesador.consumo}}
+        </td>
+        <td id="amazon">
+          <a class="ui orange button" href="https://www.amazon.{{userLang}}/gp/product/{{procesador.asin}}"
+            target="_blank">
+            <i class="amazon icon"></i>
+            <p>Go to Amazon</p>
+          </a>
+        </td>
+        <td>
+          <div class="actions">
+            <div class="ui positive right labeled icon button" (click)="Procesador = procesador">
+              Add
+              <i class="checkmark icon"></i>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+    <tfoot>
+      <tr>
+        <pagination-controls (pageChange)="p = $event">
+        </pagination-controls>
+      </tr>
+    </tfoot>
+  </table>
+  <div class="actions">
+    <div class="ui black deny button">
+      Cancel
+    </div>
+  </div>
+</div>
+
+<div class="ui modal ram">
+  <i class="close icon"></i>
+  <div class="header">
+    Select your RAM
+  </div>
+  <div class="ui pointing menu">
+    <a class="item active" [ngClass]="{'active': selectedItem === 'item1'}" (click)="selectedItem = 'item1'; term = ''">
+      Todos
+    </a>
+    <div class="right menu">
+      <div class="item">
+        <div class="ui transparent icon input">
+          <input type="text" placeholder="Buscar..." [(ngModel)]="term">
+          <i class="search link icon"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+  <table class="ui celled padded table">
+    <thead>
+      <tr>
+        <th class="single line">Manufacturer</th>
+        <th>Memory</th>
+        <th>Frequency</th>
+        <th>Type</th>
+        <th></th>
+        <th></th>
+      </tr>
+    </thead>
+    <div class="ui placeholder" *ngIf="!rams">
+      <div class="paragraph">
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+      </div>
+    </div>
+    <tbody *ngFor="let ram of rams | filter:term | paginate: { itemsPerPage: 5, currentPage: p }; let i = index">
+      <tr>
+        <td>
+          {{ram.fabricante}}
+        </td>
+        <td>
+          {{ram.memoria}}
+        </td>
+        <td class="single line">
+          {{ram.frecuencia}}
+        </td>
+        <td>
+          {{ram.tipo}}
+        </td>
+        <td id="amazon">
+          <a class="ui orange button" href="https://www.amazon.{{userLang}}/gp/product/{{ram.asin}}" target="_blank">
+            <i class="amazon icon"></i>
+            <p>Go to Amazon</p>
+          </a>
+        </td>
+        <td>
+          <div class="actions">
+            <div class="ui positive right labeled icon button" (click)="Ram = ram">
+              Add
+              <i class="checkmark icon"></i>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+    <tfoot>
+      <tr>
+        <pagination-controls (pageChange)="p = $event">
+        </pagination-controls>
+      </tr>
+    </tfoot>
+  </table>
+  <div class="actions">
+    <div class="ui black deny button">
+      Cancel
+    </div>
+  </div>
+</div>
+
+<div class="ui modal graficas">
+  <i class="close icon"></i>
+  <div class="header">
+    Select a graphics card
+  </div>
+  <div class="ui pointing menu">
+    <a class="item active" [ngClass]="{'active': selectedItem === 'item1'}" (click)="selectedItem = 'item1'; term = ''">
+      All
+    </a>
+    <a class="item" [ngClass]="{'active': selectedItem === 'item2'}" (click)="selectedItem = 'item2'; term = 'AMD'">
+      AMD
+    </a>
+    <a class="item" [ngClass]="{'active': selectedItem === 'item3'}" (click)="selectedItem = 'item3'; term = 'NVIDIA'">
+      NVIDIA
+    </a>
+    <div class="right menu">
+      <div class="item">
+        <div class="ui transparent icon input">
+          <input type="text" placeholder="Buscar..." [(ngModel)]="term">
+          <i class="search link icon"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+  <table class="ui celled padded table">
+    <thead>
+      <tr>
+        <th class="single line">Manufacturer</th>
+        <th>Model</th>
+        <th>Memory</th>
+        <th></th>
+        <th></th>
+      </tr>
+    </thead>
+    <div class="ui placeholder" *ngIf="!graficas">
+      <div class="paragraph">
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+      </div>
+    </div>
+    <tbody
+      *ngFor="let grafica of graficas | filter:term | paginate: { itemsPerPage: 5, currentPage: p }; let i = index">
+      <tr>
+        <td>
+          {{grafica.fabricante}}
+        </td>
+        <td class="single line">
+          {{grafica.modelo}}
+        </td>
+        <td>
+          {{grafica.memoria}}
+        </td>
+        <td id="amazon">
+          <a class="ui orange button" href="https://www.amazon.{{userLang}}/gp/product/{{grafica.asin}}"
+            target="_blank">
+            <i class="amazon icon"></i>
+            <p>Go to Amazon</p>
+          </a>
+        </td>
+        <td>
+          <div class="actions">
+            <div class="ui positive right labeled icon button" (click)="Grafica = grafica">
+              Add
+              <i class="checkmark icon"></i>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+    <tfoot>
+      <tr>
+        <pagination-controls (pageChange)="p = $event">
+        </pagination-controls>
+      </tr>
+    </tfoot>
+  </table>
+  <div class="actions">
+    <div class="ui black deny button">
+      Cancel
+    </div>
+  </div>
+</div>
+
+<div class="ui modal discos">
+  <i class="close icon"></i>
+  <div class="header">
+    Select your main drive
+  </div>
+  <div class="ui pointing menu">
+    <a class="item active" [ngClass]="{'active': selectedItem === 'item1'}" (click)="selectedItem = 'item1'; term = ''">
+      All
+    </a>
+    <a class="item" [ngClass]="{'active': selectedItem === 'item2'}" (click)="selectedItem = 'item2'; term = 'SSD'">
+      SSD
+    </a>
+    <a class="item" [ngClass]="{'active': selectedItem === 'item3'}" (click)="selectedItem = 'item3'; term = 'HDD'">
+      HDD
+    </a>
+    <div class="right menu">
+      <div class="item">
+        <div class="ui transparent icon input">
+          <input type="text" placeholder="Buscar..." [(ngModel)]="term">
+          <i class="search link icon"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+  <table class="ui celled padded table">
+    <thead>
+      <tr>
+        <th class="single line">Manufacturer</th>
+        <th>Model</th>
+        <th>Memory</th>
+        <th>Type</th>
+        <th></th>
+        <th></th>
+      </tr>
+    </thead>
+    <div class="ui placeholder" *ngIf="!discos">
+      <div class="paragraph">
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+      </div>
+    </div>
+    <tbody *ngFor="let disco of discos | filter:term | paginate: { itemsPerPage: 5, currentPage: p }; let i = index">
+      <tr>
+        <td>
+          {{disco.fabricante}}
+        </td>
+        <td class="single line">
+          {{disco.modelo}}
+        </td>
+        <td>
+          {{disco.memoria}}
+        </td>
+        <td>
+          {{disco.tipo}}
+        </td>
+        <td id="amazon">
+          <a class="ui orange button" href="https://www.amazon.{{userLang}}/gp/product/{{disco.asin}}" target="_blank">
+            <i class="amazon icon"></i>
+            <p>Go to Amazon</p>
+          </a>
+        </td>
+        <td>
+          <div class="actions">
+            <div class="ui positive right labeled icon button" (click)="Disco1 = disco">
+              Add
+              <i class="checkmark icon"></i>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+    <tfoot>
+      <tr>
+        <pagination-controls (pageChange)="p = $event">
+        </pagination-controls>
+      </tr>
+    </tfoot>
+  </table>
+  <div class="actions">
+    <div class="ui black deny button">
+      Cancel
+    </div>
+  </div>
+</div>
+
+<div class="ui modal secundario">
+  <i class="close icon"></i>
+  <div class="header">
+    Select your drive
+  </div>
+  <div class="ui pointing menu">
+    <a class="item active" [ngClass]="{'active': selectedItem === 'item1'}" (click)="selectedItem = 'item1'; term = ''">
+      All
+    </a>
+    <a class="item" [ngClass]="{'active': selectedItem === 'item2'}" (click)="selectedItem = 'item2'; term = 'SSD'">
+      SSD
+    </a>
+    <a class="item" [ngClass]="{'active': selectedItem === 'item3'}" (click)="selectedItem = 'item3'; term = 'HDD'">
+      HDD
+    </a>
+    <div class="right menu">
+      <div class="item">
+        <div class="ui transparent icon input">
+          <input type="text" placeholder="Buscar..." [(ngModel)]="term">
+          <i class="search link icon"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+  <table class="ui celled padded table">
+    <thead>
+      <tr>
+        <th class="single line">Manufacturer</th>
+        <th>Model</th>
+        <th>Memory</th>
+        <th>Type</th>
+        <th></th>
+        <th></th>
+      </tr>
+    </thead>
+    <div class="ui placeholder" *ngIf="!discos2">
+      <div class="paragraph">
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+      </div>
+    </div>
+    <tbody *ngFor="let disco2 of discos2 | filter:term | paginate: { itemsPerPage: 5, currentPage: p }; let i = index">
+      <tr>
+        <td>
+          {{disco2.fabricante}}
+        </td>
+        <td class="single line">
+          {{disco2.modelo}}
+        </td>
+        <td>
+          {{disco2.memoria}}
+        </td>
+        <td>
+          {{disco2.tipo}}
+        </td>
+        <td id="amazon">
+          <a class="ui orange button" href="https://www.amazon.{{userLang}}/gp/product/{{disco2.asin}}" target="_blank">
+            <i class="amazon icon"></i>
+            <p>Go to Amazon</p>
+          </a>
+        </td>
+        <td>
+          <div class="actions">
+            <div class="ui positive right labeled icon button" (click)="Disco2 = disco2">
+              Add
+              <i class="checkmark icon"></i>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+    <tfoot>
+      <tr>
+        <pagination-controls (pageChange)="p = $event">
+        </pagination-controls>
+      </tr>
+    </tfoot>
+  </table>
+  <div class="actions">
+    <div class="ui black deny button">
+      Cancel
+    </div>
+  </div>
+</div>
+
+<div class="ui modal fuentes">
+  <i class="close icon"></i>
+  <div class="header">
+    Select a PSU
+  </div>
+  <div class="ui pointing menu">
+    <a class="item active" [ngClass]="{'active': selectedItem === 'item1'}" (click)="selectedItem = 'item1'; term = ''">
+      All
+    </a>
+    <div class="right menu">
+      <div class="item">
+        <div class="ui transparent icon input">
+          <input type="text" placeholder="Buscar..." [(ngModel)]="term">
+          <i class="search link icon"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+  <table class="ui celled padded table">
+    <thead>
+      <tr>
+        <th class="single line">Manufacturer</th>
+        <th>Power</th>
+        <th></th>
+        <th></th>
+      </tr>
+    </thead>
+    <div class="ui placeholder" *ngIf="!fuentes">
+      <div class="paragraph">
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+      </div>
+    </div>
+    <tbody *ngFor="let fuente of fuentes | filter:term | paginate: { itemsPerPage: 5, currentPage: p }; let i = index">
+      <tr>
+        <td>
+          {{fuente.fabricante}}
+        </td>
+        <td class="single line">
+          {{fuente.potencia}}
+        </td>
+        <td id="amazon">
+          <a class="ui orange button" href="https://www.amazon.{{userLang}}/gp/product/{{fuente.asin}}" target="_blank">
+            <i class="amazon icon"></i>
+            <p>Go to Amazon</p>
+          </a>
+        </td>
+        <td>
+          <div class="actions">
+            <div class="ui positive right labeled icon button" (click)="Fuente = fuente">
+              Add
+              <i class="checkmark icon"></i>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+    <tfoot>
+      <tr>
+        <pagination-controls (pageChange)="p = $event">
+        </pagination-controls>
+      </tr>
+    </tfoot>
+  </table>
+  <div class="actions">
+    <div class="ui black deny button">
+      Cancel
+    </div>
+  </div>
+</div>
+
+<div class="ui modal compartir">
+  <i class="close icon"></i>
+  <div class="header">
+    Share this build
+  </div>
+  <div class="share buttons">
+    <a class="ui twitter button" target="popup"
+      href="https://twitter.com/intent/tweet?text=Look%20this%20build%20at%20@HDsettings:%20{{placaBase.modelo}}%20{{Procesador.modelo}}%20{{Grafica.modelo}}%20{{Ram.memoria}}%20{{Ram.tipo}}%20{{Ram.frecuencia}}MHz%20{{Disco1.fabricante}}%20{{Disco1.memoria}}%20{{Disco1.tipo}}%20{{Fuente.fabricante}}%20{{Fuente.potencia}}W">
+      <i class="twitter icon"></i>
+      Twitter
+    </a>
+    <a class="ui whatsapp button" target="popup"
+      href="https://web.whatsapp.com/send?text=Look%20this%20build%20at%20HDsettings.com:%20{{placaBase.modelo}}%20{{Procesador.modelo}}%20{{Grafica.modelo}}%20{{Ram.memoria}}%20{{Ram.tipo}}%20{{Ram.frecuencia}}MHz%20{{Disco1.fabricante}}%20{{Disco1.memoria}}%20{{Disco1.tipo}}%20{{Fuente.fabricante}}%20{{Fuente.potencia}}W">
+      <i class="whatsapp icon"></i>
+      WhatsApp
+    </a>
+    <a class="ui telegram button" target="popup"
+      href="https://telegram.me/share/url?url=hdsettings.com&text=Look%20this%20build%20at%20HDsettings.com:%20{{placaBase.modelo}}%20{{Procesador.modelo}}%20{{Grafica.modelo}}%20{{Ram.memoria}}%20{{Ram.tipo}}%20{{Ram.frecuencia}}MHz%20{{Disco1.fabricante}}%20{{Disco1.memoria}}%20{{Disco1.tipo}}%20{{Fuente.fabricante}}%20{{Fuente.potencia}}W">
+      <i class="telegram icon"></i>
+      Telegram
+    </a>
+  </div>
+</div>

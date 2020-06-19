@@ -1,0 +1,68 @@
+<div class="ui three column stackable grid">
+  <div class="ui three column stackable grid" *ngIf="!noticias">
+    <div class="column">
+      <div class="ui raised segment">
+        <div class="ui placeholder">
+          <div class="image header">
+            <div class="line"></div>
+            <div class="line"></div>
+          </div>
+          <div class="paragraph">
+            <div class="medium line"></div>
+            <div class="short line"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="column">
+      <div class="ui raised segment">
+        <div class="ui placeholder">
+          <div class="image header">
+            <div class="line"></div>
+            <div class="line"></div>
+          </div>
+          <div class="paragraph">
+            <div class="medium line"></div>
+            <div class="short line"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="column">
+      <div class="ui raised segment">
+        <div class="ui placeholder">
+          <div class="image header">
+            <div class="line"></div>
+            <div class="line"></div>
+          </div>
+          <div class="paragraph">
+            <div class="medium line"></div>
+            <div class="short line"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="ui container">
+    <div class="ui relaxed divided items">
+      <div class="item" *ngFor="let noticia of noticias | slice:0:3; let i=index">
+        <div class="ui small image">
+          <img [src]="returnImage(noticia.body)" *ngIf="returnImage(noticia.body)">
+        </div>
+        <div class="content">
+          <a class="header" [href]="noticia.url">{{noticia.name}}</a>
+          <div class="meta">
+            <a>{{formatDate(noticia.dateInserted)}}</a>
+          </div>
+          <div class="description" [innerHtml]="stripFormat(noticia.body)">
+          </div>
+          <div class="extra">
+            <a class="ui right floated" [href]="noticia.url">
+              <i class="comments outline like icon"></i> {{noticia.countComments}} Comentarios
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

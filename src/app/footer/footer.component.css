@@ -1,0 +1,25 @@
+.container{
+    background-color: #161925;
+    color: white;
+    padding-left: 8em;
+    padding-right: 8em;
+    padding-top: 2em;
+    padding-bottom: 2em;
+}
+
+.right {
+    text-align: right;
+}
+
+.separator{
+    height: 100px;
+    margin-top:calc(125px * -0.1);
+    background-image: linear-gradient(to bottom right, transparent, transparent 49%, #161925 50%, #161925);
+    background-color: #F5E9E2;
+  }
+
+  @media screen and (max-width: 950px) {
+    .container {
+      padding: 1em;
+    }
+  }

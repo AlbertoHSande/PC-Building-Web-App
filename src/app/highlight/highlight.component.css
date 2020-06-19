@@ -1,0 +1,10 @@
+@media screen and (min-width: 1300px) {
+    .cards{
+        position: absolute;
+        top: -5px;
+        padding-left: 8em;
+        padding-right: 8em;
+        background-color: transparent;
+    }
+}
+

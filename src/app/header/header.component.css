@@ -1,0 +1,57 @@
+.ui.menu .item img.logo {
+    width: 20rem;
+  }
+
+  .ui.menu{
+    border-radius: 0px;
+    margin-bottom: 0px;
+    background-color: #161925;
+  }
+
+  .main{
+    background-color: #161925;
+    color: white;
+  }
+
+  .center {
+    text-align: center
+   }
+  
+  .separator{
+    height: 100px;
+    margin-top:calc(125px * -0.1);
+    background-image: linear-gradient(to bottom right, transparent, transparent 49%, #F5E9E2 50%, #F5E9E2);
+    background-color: #161925;
+    margin-bottom: 2em;
+  }
+
+  a{
+    color: white;
+  }
+
+  a:hover{
+    color: red;
+  }
+
+  #mobile {
+    visibility: hidden;
+  }
+
+  .faq.content {
+    padding: 2em;
+  }
+
+
+  @media screen and (max-width: 950px) {
+    #hidden {
+      visibility: hidden;
+      clear: both;
+      float: left;
+      display: none;
+    }
+    #mobile {
+      visibility: visible;
+    }
+  }
+
+

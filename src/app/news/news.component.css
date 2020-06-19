@@ -1,0 +1,23 @@
+.container {
+  padding: 1em;
+  background: #F5E9E2;
+}
+.ui.card {
+  display: inline-block;
+}
+
+a{
+  color: #DB2828;
+}
+
+body .ui.card, body .ui.cards>.card{
+  box-shadow: none;
+}
+
+.embedImage-img {
+  display: block;
+  max-width:230px;
+  max-height:95px;
+  width: auto;
+  height: auto;
+}

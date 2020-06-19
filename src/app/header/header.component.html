@@ -1,0 +1,44 @@
+<header class="header">
+  <div class="ui large top menu">
+    <div class="ui container">
+      <div class="left hidden menu" id="hidden">
+        <a href="https://www.instagram.com/hdsettings_official/" target="_blank" class="item">
+          <i class="instagram square inverted icon"></i>
+        </a>
+        <a href="https://twitter.com/HDsettings" target="_blank" class="item">
+          <i class="twitter square inverted icon"></i>
+        </a>
+        <a href="https://www.youtube.com/channel/UC5GhHHWGeeaQGovCemiDBbg" target="_blank" class="item">
+          <i class="youtube square inverted icon"></i>
+        </a>
+      </div>
+      <a href="https://hdsettings.com" class="header item center">
+        <img class="logo" src="assets/images/header.svg">
+      </a>
+      <div class="right hidden menu" id="hidden">
+        <div class="item">
+          <a (click)="showFAQ()"
+            class="ui inverted button"><i class="comments outline icon"></i>FAQ</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="main center">
+    <p>Build the computer you need</p>
+    <a id="mobile" (click)="showFAQ()"
+        class="ui inverted button"><i class="comments outline icon" ></i>FAQ</a>
+  </div>
+</header>
+<div class="separator"></div>
+
+<div class="ui modal faq">
+  <i class="close icon"></i>
+  <div class="header">
+    FAQ
+  </div>
+  <div class="faq content">
+    I made this web app available few days ago. If you have any question, tweet me at <a style="color:red" href="https://twitter.com/HDsettings" target="_blank" class="item">
+      <i class="twitter square icon"></i> @HDsettings
+    </a>. I will build this section with the most frequently asked questions.
+  </div>
+</div>

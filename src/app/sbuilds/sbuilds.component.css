@@ -1,0 +1,30 @@
+.container {
+    background-color: black;
+    color: white;
+    padding: 2em;
+  }
+  .content .header{
+    color: white;
+  }
+  .avatar {
+    height: 32px;
+    width: 32px;
+  }
+  .grid {
+    background-color: black;
+    color: white;
+    padding: 2em;
+  }
+
+  .shadow {
+    position: relative;
+    z-index: 2;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    background: repeating-linear-gradient(
+      -55deg,
+      #222,
+      #222 10px,
+      #333 10px,
+      #333 20px
+    );
+  }
