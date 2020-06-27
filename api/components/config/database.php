@@ -1,8 +1,13 @@
 <?php
 class Database{
+	
+	// Put this file outside remote access
  
-    include("../../.dbconf/db_conf.php");
     public $conn;
+	private $host = "localhost";
+    private $db_name = "";
+    private $username = "";
+    private $password = "";
  
     // get the database connection
     public function getConnection(){
